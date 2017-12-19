@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的 
+	例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀) -->
+<mapper namespace="com.ymm.common.dao.BaseDao">
+
+	<!-- -->
+	<select id="findAllProduct" resultType="com.ymm.product.entity.Product">
+		select * from
+		<include refid="tableName"></include>
+	</select>
+	
+	<select id="findProductById" resultType="com.ymm.product.entity.Product"
+		parameterType="String">
+		select * from
+		<include refid="tableName"></include>
+		where pid = #{pid}
+	</select>
+
+	<delete id="delProductById" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		where pid = #{pid}
+	</delete>
+
+	<update id="updateProduct" parameterType="com.ymm.product.entity.Product">
+		update
+		<include refid="tableName"></include>
+		<set>
+			<if test="pname != null">pname = #{pname},</if>
+			<if test="describe != null">describe = #{describe},</if>
+			<if test="price != null">price = #{price},</if>
+			<if test="inventory != null">inventory = #{inventory},</if>
+			<if test="sent != null">sent = #{sent},</if>
+		</set>
+		where pid = #{pid}
+	</update>
+
+	<insert id="insertProduct" parameterType="com.ymm.product.entity.Product">
+		insert into
+		<include refid="tableName"></include> 
+		values (
+		#{pid,jdbcType=VARCHAR},#{pname,jdbcType=VARCHAR},
+		#{describe,jdbcType=VARCHAR},#{price,jdbcType=VARCHAR},#{inventory,jdbcType=VARCHAR},
+		#{sent,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="getMaxIdfromProduct" resultType="String">
+		select
+		max(to_number( pid ))+1 from 
+		<include refid="tableName"></include>
+	</select>
+
+	<!--表名 -->
+	<sql id="tableName">
+		"T_PRODUCT"
+	</sql>
+
+</mapper>

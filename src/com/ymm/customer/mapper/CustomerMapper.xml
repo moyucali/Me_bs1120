@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的 
+	例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀) -->
+<mapper namespace="com.ymm.common.dao.BaseDao">
+	<!--表名 -->
+	<sql id="tableName">
+		"T_CUSTOMER"
+	</sql>
+	
+	<select id="findAllCustomer" resultType="com.ymm.customer.entity.Customer">
+		select * from
+		<include refid="tableName"></include>
+	</select>
+	
+	<select id="findCustomerLike" resultType="com.ymm.customer.entity.Customer" parameterType="Map">
+		SELECT * FROM T_CUSTOMER WHERE cname like '%${search}%' or cnickname like '%${search}%'
+	</select>
+	
+
+	<delete id="delCustomerById" parameterType="String">
+		delete from 
+		<include refid="tableName"></include>
+		where cid = #{cid}
+	</delete>
+
+	<update id="updateCustomer" parameterType="com.ymm.customer.entity.Customer">
+		update
+		<include refid="tableName"></include>
+		<set>
+			<if test="cname != null">cname = #{cname},</if>
+			<if test="cpwd != null">cpwd = #{cpwd},</if>
+			<if test="cnickname != null">cnickname = #{cnickname},</if>
+			<if test="crealname != null">crealname = #{crealname},</if>
+			<if test="csex != null">csex = #{csex},</if>
+			<if test="cphone != null">cphone = #{cphone},</if>
+			<if test="cbirth != null">cbirth = #{cbirth},</if>
+			<if test="clevel != null">clevel = #{clevel},</if>
+			<if test="costed != null">costed = #{costed},</if>
+			<if test="credit != null">credit = #{credit},</if>
+			<if test="ctime != null">ctime = #{ctime},</if>
+			<if test="head != null">head = #{head},</if>
+			<if test="orders != null">orders = #{orders},</if>
+		</set>
+		where cid = #{cid}
+	</update>
+
+	<insert id="insertCustomer" parameterType="com.ymm.customer.entity.Customer">
+		insert into
+		<include refid="tableName"></include> 
+		values (
+		#{cid,jdbcType=VARCHAR},#{cname,jdbcType=VARCHAR},#{cpwd,jdbcType=VARCHAR},
+		#{cnickname,jdbcType=VARCHAR},#{crealname,jdbcType=VARCHAR},
+		#{csex,jdbcType=VARCHAR},#{cphone,jdbcType=VARCHAR},
+		#{cbirth,jdbcType=VARCHAR},#{clevel,jdbcType=VARCHAR},#{costed,jdbcType=VARCHAR},
+		#{credit,jdbcType=VARCHAR},#{ctime,jdbcType=VARCHAR},#{head,jdbcType=VARCHAR},
+		#{orders,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<select id="getCustomerbyId" resultType="com.ymm.customer.entity.Customer" parameterType="String">
+		select * from 
+		<include refid="tableName"></include>
+		where cid = #{cid}
+	</select>
+	
+	<select id="getMaxIdfromCustomer" resultType="String">
+		select
+		max(to_number( cid ))+1 from 
+		<include refid="tableName"></include>
+	</select>
+</mapper>

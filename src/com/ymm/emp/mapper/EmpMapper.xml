@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的 
+	例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀) -->
+<mapper namespace="com.ymm.common.dao.BaseDao">
+	<!--表名 -->
+	<sql id="tableName">
+		"T_EMP"
+	</sql>
+	
+	<select id="findAllEmp" resultType="com.ymm.emp.entity.Emp">
+		select * from
+		<include refid="tableName"></include>
+	</select>
+
+	<delete id="delEmpById" parameterType="String">
+		delete from 
+		<include refid="tableName"></include>
+		where empno = #{empno}
+	</delete>
+
+	<update id="updateEmp" parameterType="com.ymm.emp.entity.Emp">
+		update
+		<include refid="tableName"></include>
+		<set>
+			<if test="ename != null">ename = #{ename},</if>
+			<if test="esex != null">esex = #{esex},</if>
+			<if test="edate != null">edate = #{edate},</if>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="job != null">job = #{job},</if>
+			<if test="deptno != null">deptno = #{deptno},</if>
+			<if test="sal != null">sal = #{sal},</if>
+		</set>
+		where empno = #{empno}
+	</update>
+	
+	<update id="emptyDept" parameterType="String">
+		update
+		<include refid="tableName"></include>
+		<set>
+			deptno = null
+		</set>
+		where deptno = #{deptno}
+	</update>
+	
+	<insert id="insertEmp" parameterType="com.ymm.emp.entity.Emp">
+		insert into
+		<include refid="tableName"></include> 
+		values (
+		#{empno,jdbcType=VARCHAR},#{ename,jdbcType=VARCHAR},#{esex,jdbcType=VARCHAR},
+		#{edate,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR},#{job,jdbcType=VARCHAR},
+		#{deptno,jdbcType=VARCHAR},#{sal,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<select id="getEmpbyId" resultType="com.ymm.emp.entity.Emp" parameterType="String">
+		select * from 
+		<include refid="tableName"></include>
+		where empno = #{empno}
+	</select>
+	
+	<select id="getMaxIdfromEmp" resultType="String">
+		select
+		max(to_number( empno ))+1 from 
+		<include refid="tableName"></include>
+	</select>
+	
+	
+</mapper>

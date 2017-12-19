@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的 
+	例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀) -->
+<mapper namespace="com.ymm.common.dao.BaseDao">
+
+	<!--  -->
+	<select id="findAllUser" resultType="com.ymm.user.entity.User">
+		select * from
+		<include refid="tableName"></include>
+	</select>
+
+	<select id="findUserById" resultType="com.ymm.user.entity.User"
+		parameterType="String">
+		select * from
+		<include refid="tableName"></include>
+		<where>
+			<if test="_parameter != null">
+				id=#{id}
+			</if>
+		</where>
+	</select>
+
+	<select id="findUserByProperty" resultType="com.ymm.user.entity.User"
+		parameterType="com.ymm.user.entity.User">
+		select * from
+		<include refid="tableName"></include>
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<if test="id != null">
+				id=#{id}
+			</if>
+			<if test="username != null">
+				and username=#{username}
+			</if>
+			<if test="password != null">
+				and password=#{password}
+			</if>
+			<if test="manager != null">
+				and manager=#{manager}
+			</if>
+		</trim>
+	</select>
+
+	<select id="getMaxIdFromUser" resultType="String">
+		select
+		max(to_number(id))+1 from T_USER
+	</select>
+
+	<insert id="insertUser" parameterType="com.ymm.user.entity.User">
+		insert into
+		<include refid="tableName"></include> 
+		values (
+		#{id},#{username,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{manager,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<delete id="delUserById" parameterType="String">
+		delete from
+		<include refid="tableName"></include>
+		<where>
+			<if test="_parameter != null">
+				id = #{id,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</delete>
+
+	<update id="updateUser" parameterType="com.ymm.user.entity.User">
+		update
+		<include refid="tableName"></include>
+		<set>
+			<if test="username != null">username = #{username},</if>
+			<if test="password != null">password = #{password},</if>
+			<if test="manager != null">manager = #{manager},</if>
+		</set>
+		<where>
+			<if test="id != null">
+				id = #{id}
+			</if>
+		</where>
+	</update>
+
+	<!--表名 -->
+	<sql id="tableName">
+		"T_USER"
+	</sql>
+
+	<!-- 字段 -->
+	<sql id="Field">
+		"id",
+		"username",
+		"password",
+		"manager"
+	</sql>
+
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{id},
+		#{username},
+		#{password},
+		#{manager}
+	</sql>
+
+</mapper>

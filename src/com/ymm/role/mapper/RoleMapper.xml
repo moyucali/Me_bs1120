@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的 
+	例如namespace="me.gacl.mapping.userMapper"就是me.gacl.mapping(包名)+userMapper(userMapper.xml文件去除后缀) -->
+<mapper namespace="com.ymm.common.dao.BaseDao">
+	<!--表名 -->
+	<sql id="tableName">
+		"T_ROLE"
+	</sql>
+	
+	<select id="findAllRole" resultType="com.ymm.role.entity.Role">
+		select * from
+		<include refid="tableName"></include>
+	</select>
+
+	<delete id="delRoleById" parameterType="String">
+		delete from 
+		<include refid="tableName"></include>
+		where rid = #{rid}
+	</delete>
+
+	<update id="updateRole" parameterType="com.ymm.role.entity.Role">
+		update
+		<include refid="tableName"></include>
+		<set>
+			<if test="rname != null">rname = #{rname},</if>
+			<if test="rdescribe != null">rdescribe = #{rdescribe},</if>
+			<if test="fid != null">fid = #{fid},</if>
+		</set>
+		where rid = #{rid}
+	</update>
+
+	<insert id="insertRole" parameterType="com.ymm.role.entity.Role">
+		insert into
+		<include refid="tableName"></include> 
+		values (
+		#{rid,jdbcType=VARCHAR},
+		#{rname,jdbcType=VARCHAR},#{rdescribe,jdbcType=VARCHAR},#{fid,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="getMaxIdfromRole" resultType="String">
+		select
+		max(to_number( rid ))+1 from 
+		<include refid="tableName"></include>
+	</select>
+</mapper>
